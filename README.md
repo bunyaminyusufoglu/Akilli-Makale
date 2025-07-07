@@ -36,5 +36,5 @@ AkıllıMakale, kullanıcıların belirledikleri konu başlığı, kategori, kel
 
 ### 1️⃣ Projeyi Klonla
 
-git clone https://github.com/kullaniciAdin/Akilli-Makale.git
+git clone https://github.com/bunyaminyusufoglu/Akilli-Makale.git
 cd Akilli-Makale
