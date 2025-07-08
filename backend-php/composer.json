@@ -1,0 +1,11 @@
+{
+  "name": "akilli-makale/backend",
+  "description": "Akıllı Makale PHP Backend",
+  "type": "project",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+} 
