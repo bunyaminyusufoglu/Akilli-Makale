@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -51,20 +52,40 @@ const Login = () => {
     }
     
     setIsLoading(true);
+    setErrors({}); // Clear previous errors
     
     try {
-      // TODO: Implement actual login logic here
-      console.log('Login attempt:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Handle successful login
-      alert('Giriş başarılı!');
+      const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store user data and token in localStorage
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        localStorage.setItem('token', data.data.token);
+        
+        // Show success message
+        alert('Giriş başarılı! Dashboard\'a yönlendiriliyorsunuz...');
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      } else {
+        // Handle API errors
+        setErrors({ general: data.message || 'Giriş başarısız' });
+      }
       
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({ general: 'Giriş yapılırken bir hata oluştu. Lütfen tekrar deneyin.' });
+      setErrors({ general: 'Sunucu bağlantı hatası. Lütfen tekrar deneyin.' });
     } finally {
       setIsLoading(false);
     }
