@@ -5,11 +5,13 @@ const UserHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
+  //const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logout clicked');
-    // Redirect to login page
-    window.location.href = '/login';
+    window.location.href = '/';
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
@@ -35,7 +37,7 @@ const UserHeader = () => {
                 <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style={{ width: '35px', height: '35px' }}>
                   <i className="fas fa-user"></i>
                 </div>
-                <span className="d-none d-md-block">Ahmet Yılmaz</span>
+                  <span className="d-none d-md-block">{user.first_name} {user.last_name}</span>
                 <i className="fas fa-chevron-down"></i>
               </button>
 
@@ -48,8 +50,8 @@ const UserHeader = () => {
                         <i className="fas fa-user"></i>
                       </div>
                       <div>
-                        <div className="fw-bold">Ahmet Yılmaz</div>
-                        <small className="text-muted">ahmet@email.com</small>
+                        <div className="fw-bold">{user.first_name} {user.last_name}</div>
+                        <small className="text-muted">{user.email}</small>
                       </div>
                     </div>
                   </div>
@@ -57,14 +59,6 @@ const UserHeader = () => {
                   <Link to="/profile" className="dropdown-item">
                     <i className="fas fa-user me-2"></i>
                     Profil
-                  </Link>
-                  <Link to="/settings" className="dropdown-item">
-                    <i className="fas fa-cog me-2"></i>
-                    Ayarlar
-                  </Link>
-                  <Link to="/help" className="dropdown-item">
-                    <i className="fas fa-question-circle me-2"></i>
-                    Yardım
                   </Link>
                   <div className="dropdown-divider"></div>
                   <button className="dropdown-item text-danger" onClick={handleLogout}>
