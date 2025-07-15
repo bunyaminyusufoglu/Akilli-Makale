@@ -12,29 +12,6 @@ class AuthController {
         $this->userModel = new User();
     }
 
-    public function test() {
-        try {
-            $this->userModel = new User();
-            
-            // Check if test user exists, if not create one
-            $testUser = $this->userModel->findByEmail('ahmet@example.com');
-            if (!$testUser) {
-                $testUserData = [
-                    'firstName' => 'Ahmet',
-                    'lastName' => 'Yılmaz',
-                    'email' => 'ahmet@example.com',
-                    'password' => '123456'
-                ];
-                $this->userModel->create($testUserData);
-                return $this->successResponse('Veritabanı bağlantısı başarılı. Test kullanıcısı oluşturuldu: ahmet@example.com / 123456');
-            }
-            
-            return $this->successResponse('Veritabanı bağlantısı başarılı. Test kullanıcısı mevcut: ahmet@example.com / 123456');
-        } catch (Exception $e) {
-            return $this->errorResponse('Veritabanı hatası: ' . $e->getMessage(), 500);
-        }
-    }
-
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return $this->errorResponse('Sadece POST istekleri kabul edilir', 405);
@@ -43,7 +20,7 @@ class AuthController {
         if (!$input) {
             return $this->errorResponse('Geçersiz JSON verisi', 400);
         }
-        $requiredFields = ['firstName', 'lastName', 'email', 'password'];
+        $requiredFields = ['first_name', 'last_name', 'email', 'password'];
         foreach ($requiredFields as $field) {
             if (empty($input[$field])) {
                 return $this->errorResponse("$field alanı gereklidir", 400);
@@ -64,7 +41,9 @@ class AuthController {
                 'id' => $user['id'],
                 'email' => $user['email'],
                 'firstName' => $user['first_name'],
-                'lastName' => $user['last_name']
+                'lastName' => $user['last_name'],
+                'used_balance' => 0,
+                'remaining_balance' => 50
             ]);
             return $this->successResponse('Kullanıcı başarıyla oluşturuldu', [
                 'user' => $user,
@@ -76,10 +55,16 @@ class AuthController {
     }
 
     public function login() {
+        // Debug: Log the request
+        error_log("Login request received");
+        error_log("Request method: " . $_SERVER['REQUEST_METHOD']);
+        error_log("Raw input: " . file_get_contents('php://input'));
+        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return $this->errorResponse('Sadece POST istekleri kabul edilir', 405);
         }
         $input = json_decode(file_get_contents('php://input'), true);
+        error_log("Decoded input: " . json_encode($input));
         if (!$input) {
             return $this->errorResponse('Geçersiz JSON verisi', 400);
         }
@@ -95,7 +80,9 @@ class AuthController {
                 'id' => $user['id'],
                 'email' => $user['email'],
                 'firstName' => $user['first_name'],
-                'lastName' => $user['last_name']
+                'lastName' => $user['last_name'],
+                'used_balance' => $user['used_balance'],
+                'remaining_balance' => $user['remaining_balance']
             ]);
             return $this->successResponse('Giriş başarılı', [
                 'user' => $user,

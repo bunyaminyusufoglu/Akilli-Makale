@@ -17,7 +17,8 @@ class User {
             'last_name' => $data['lastName'],
             'email' => $data['email'],
             'password' => $data['password'],
-            'credits' => 50
+            'used_balance' => 0,
+            'remaining_balance' => 50
         ];
         try {
             $userId = $this->db->insert('users', $userData);
@@ -35,7 +36,7 @@ class User {
     }
 
     public function findById($id) {
-        $sql = "SELECT id, first_name, last_name, email, credits FROM users WHERE id = :id";
+        $sql = "SELECT id, first_name, last_name, email, used_balance, remaining_balance FROM users WHERE id = :id";
         return $this->db->fetch($sql, ['id' => $id]);
     }
 

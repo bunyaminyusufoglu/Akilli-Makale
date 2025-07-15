@@ -54,19 +54,33 @@ const Login = () => {
     setIsLoading(true);
     setErrors({}); // Clear previous errors
     
+    // Debug: Log the request data
+    console.log('Login attempt with:', {
+      email: formData.email,
+      password: formData.password
+    });
+    
     try {
+      const requestBody = JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      console.log('Request body:', requestBody);
+      
       const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+        body: requestBody
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (data.success) {
         // Store user data and token in localStorage
