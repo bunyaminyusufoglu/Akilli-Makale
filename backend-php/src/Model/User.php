@@ -13,8 +13,8 @@ class User {
     public function create($data) {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $userData = [
-            'first_name' => $data['firstName'],
-            'last_name' => $data['lastName'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => $data['password'],
             'used_balance' => 0,
@@ -54,8 +54,8 @@ class User {
 
     public function updateProfile($userId, $data) {
         $updateData = [
-            'first_name' => $data['firstName'],
-            'last_name' => $data['lastName']
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name']
         ];
         if (isset($data['password']) && !empty($data['password'])) {
             $updateData['password'] = password_hash($data['password'], PASSWORD_DEFAULT);

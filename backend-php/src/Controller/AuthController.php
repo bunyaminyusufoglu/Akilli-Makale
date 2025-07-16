@@ -37,6 +37,12 @@ class AuthController {
         }
         try {
             $user = $this->userModel->create($input);
+            if (!$user) {
+                error_log('Kullanıcı oluşturulamadı!');
+                $response = $this->errorResponse('Kullanıcı oluşturulamadı', 500);
+                echo json_encode($response, JSON_UNESCAPED_UNICODE);
+                exit();
+            }
             $token = JWT::generate([
                 'id' => $user['id'],
                 'email' => $user['email'],
@@ -45,12 +51,17 @@ class AuthController {
                 'used_balance' => 0,
                 'remaining_balance' => 50
             ]);
-            return $this->successResponse('Kullanıcı başarıyla oluşturuldu', [
+            $response = $this->successResponse('Kullanıcı başarıyla oluşturuldu', [
                 'user' => $user,
                 'token' => $token
             ]);
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            exit();
         } catch (Exception $e) {
-            return $this->errorResponse('Kayıt işlemi başarısız: ' . $e->getMessage(), 500);
+            error_log('Kayıt işlemi başarısız: ' . $e->getMessage());
+            $response = $this->errorResponse('Kayıt işlemi başarısız: ' . $e->getMessage(), 500);
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+            exit();
         }
     }
 
@@ -79,8 +90,8 @@ class AuthController {
             $token = JWT::generate([
                 'id' => $user['id'],
                 'email' => $user['email'],
-                'firstName' => $user['first_name'],
-                'lastName' => $user['last_name'],
+                'first_name' => $user['first_name'],    
+                'last_name' => $user['last_name'],
                 'used_balance' => $user['used_balance'],
                 'remaining_balance' => $user['remaining_balance']
             ]);

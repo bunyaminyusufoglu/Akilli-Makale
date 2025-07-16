@@ -88,6 +88,10 @@ const UserSidebar = ({ activeTab, setActiveTab }) => {
               <i className="fas fa-comments me-2"></i>
               Destek
             </button>
+            <button className="btn btn-outline-danger btn-sm">
+              <i className="fas fa-sign-out-alt me-2"></i>
+              Çıkış Yap
+            </button>
           </div>
         </div>
       </div>
