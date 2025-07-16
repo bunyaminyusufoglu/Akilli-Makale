@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    agreeToTerms: false
+    confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
-    }));
-    // Clear error when user starts typing
+    }));  
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -31,16 +29,16 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'Ad gereklidir';
-    } else if (formData.firstName.trim().length < 2) {
-      newErrors.firstName = 'Ad en az 2 karakter olmalıdır';
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'Ad gereklidir';
+    } else if (formData.first_name.trim().length < 2) {
+      newErrors.first_name = 'Ad en az 2 karakter olmalıdır';
     }
     
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Soyad gereklidir';
-    } else if (formData.lastName.trim().length < 2) {
-      newErrors.lastName = 'Soyad en az 2 karakter olmalıdır';
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Soyad gereklidir';
+    } else if (formData.last_name.trim().length < 2) {
+      newErrors.last_name = 'Soyad en az 2 karakter olmalıdır';
     }
     
     if (!formData.email) {
@@ -63,36 +61,38 @@ const Register = () => {
       newErrors.confirmPassword = 'Şifreler eşleşmiyor';
     }
     
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'Kullanım şartlarını kabul etmelisiniz';
-    }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       return;
     }
-    
     setIsLoading(true);
-    
     try {
-      // TODO: Implement actual registration logic here
-      console.log('Registration attempt:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Handle successful registration
-      alert('Kayıt başarılı! Giriş yapabilirsiniz.');
-      
+      const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        alert('Kayıt başarılı! Giriş yapabilirsiniz.');
+        navigate('/login');
+      } else {
+        setErrors({ general: data.message || 'Kayıt olurken bir hata oluştu.' });
+      }
     } catch (error) {
-      console.error('Registration error:', error);
-      setErrors({ general: 'Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.' });
+      setErrors({ general: 'Sunucuya bağlanılamadı.' });
     } finally {
       setIsLoading(false);
     }
@@ -104,14 +104,12 @@ const Register = () => {
         <div className="col-md-8 col-lg-6 col-xl-5">
           <div className="card shadow-lg border-0 mt-5 mb-5">
             <div className="card-body p-5">
-              {/* Header */}
               <div className="text-center mb-4">
                 <i className="fas fa-user-plus text-primary" style={{ fontSize: '3rem' }}></i>
                 <h2 className="fw-bold mt-3 mb-2">Kayıt Ol</h2>
                 <p className="text-muted">Hemen ücretsiz hesap oluşturun</p>
               </div>
 
-              {/* Error Message */}
               {errors.general && (
                 <div className="alert alert-danger" role="alert">
                   <i className="fas fa-exclamation-triangle me-2"></i>
@@ -119,9 +117,7 @@ const Register = () => {
                 </div>
               )}
 
-              {/* Registration Form */}
               <form onSubmit={handleSubmit}>
-                {/* Name Fields */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="firstName" className="form-label fw-semibold">
@@ -130,46 +126,45 @@ const Register = () => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
+                      className={`form-control ${errors.first_name ? 'is-invalid' : ''}`}
+                      id="first_name"
+                      name="first_name"
+                      value={formData.first_name}
                       onChange={handleChange}
                       placeholder="Adınız"
                       disabled={isLoading}
                     />
-                    {errors.firstName && (
+                    {errors.first_name && (
                       <div className="invalid-feedback">
                         <i className="fas fa-exclamation-circle me-1"></i>
-                        {errors.firstName}
+                        {errors.first_name}
                       </div>
                     )}
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label htmlFor="lastName" className="form-label fw-semibold">
+                    <label htmlFor="last_name" className="form-label fw-semibold">
                       <i className="fas fa-user me-2 text-muted"></i>
                       Soyad
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
+                      className={`form-control ${errors.last_name ? 'is-invalid' : ''}`}
+                      id="last_name"
+                      name="last_name"
+                      value={formData.last_name}
                       onChange={handleChange}
                       placeholder="Soyadınız"
                       disabled={isLoading}
                     />
-                    {errors.lastName && (
+                    {errors.last_name && (
                       <div className="invalid-feedback">
                         <i className="fas fa-exclamation-circle me-1"></i>
-                        {errors.lastName}
+                        {errors.last_name}
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Email Field */}
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label fw-semibold">
                     <i className="fas fa-envelope me-2 text-muted"></i>
@@ -193,7 +188,6 @@ const Register = () => {
                   )}
                 </div>
 
-                {/* Password Fields */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="password" className="form-label fw-semibold">
@@ -241,7 +235,6 @@ const Register = () => {
                   </div>
                 </div>
 
-                {/* Password Requirements */}
                 <div className="mb-3">
                   <small className="text-muted">
                     <i className="fas fa-info-circle me-1"></i>
@@ -249,32 +242,6 @@ const Register = () => {
                   </small>
                 </div>
 
-                {/* Terms and Conditions */}
-                <div className="mb-4">
-                  <div className="form-check">
-                    <input
-                      className={`form-check-input ${errors.agreeToTerms ? 'is-invalid' : ''}`}
-                      type="checkbox"
-                      id="agreeToTerms"
-                      name="agreeToTerms"
-                      checked={formData.agreeToTerms}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                    />
-                    <label className="form-check-label text-muted" htmlFor="agreeToTerms">
-                      <Link to="/terms" className="text-decoration-none text-primary">Kullanım Şartları</Link> ve{' '}
-                      <Link to="/privacy" className="text-decoration-none text-primary">Gizlilik Politikası</Link>'nı kabul ediyorum
-                    </label>
-                    {errors.agreeToTerms && (
-                      <div className="invalid-feedback d-block">
-                        <i className="fas fa-exclamation-circle me-1"></i>
-                        {errors.agreeToTerms}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Submit Button */}
                 <button
                   type="submit"
                   className="btn btn-primary w-100 py-2 fw-semibold"
@@ -294,7 +261,6 @@ const Register = () => {
                 </button>
               </form>
 
-              {/* Login Link */}
               <div className="text-center mt-4">
                 <span className="text-muted">Zaten hesabınız var mı? </span>
                 <Link to="/login" className="text-decoration-none fw-semibold">
