@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MyArticlesContent = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    //const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
     if (!token) {
         window.location.href = '/login';

@@ -68,7 +68,7 @@ const Login = () => {
       
       console.log('Request body:', requestBody);
       
-      const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

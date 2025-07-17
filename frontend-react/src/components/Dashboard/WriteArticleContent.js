@@ -57,7 +57,6 @@ const WriteArticleContent = () => {
 
   return (
     <div className="p-4">
-      <h1 className="h3 fw-bold mb-4">Yapay Zeka ile Makale Oluştur</h1>
       <div className="card border-0 shadow-sm">
         <div className="card-body">
           {error && (
