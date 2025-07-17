@@ -72,10 +72,12 @@ const Register = () => {
     }
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/register', {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           first_name: formData.first_name,

@@ -11,10 +11,6 @@ const DashboardContent = () => {
 
     return (
     <div className="p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h3 fw-bold">Dashboard</h1>
-      </div>
-  
       {/* Stats Cards */}
       <div className="row mb-4">
         <div className="col-md-3 mb-3">
