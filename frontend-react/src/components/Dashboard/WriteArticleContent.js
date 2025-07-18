@@ -4,7 +4,9 @@ const WriteArticleContent = () => {
   const [form, setForm] = useState({
     title: '',
     keywords: '',
-    prompt: ''
+    description: '',
+    subheading_count: 3,
+    lang: 'tr'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -14,7 +16,7 @@ const WriteArticleContent = () => {
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'subheading_count' ? Number(value) : value
     }));
     setError('');
     setArticle('');
@@ -22,24 +24,23 @@ const WriteArticleContent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title.trim() || !form.keywords.trim()) {
-      setError('Başlık ve anahtar kelimeler zorunludur.');
+    if (!form.title.trim() || !form.keywords.trim() || !form.subheading_count) {
+      setError('Başlık, anahtar kelimeler ve alt başlık sayısı zorunludur.');
       return;
     }
     setIsLoading(true);
     setError('');
     setArticle('');
     try {
-      const response = await fetch('http://localhost/Akilli-Makale/backend-php/public/api/generate-article', {
+      const response = await fetch('/api/write_article', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: form.title,
           keywords: form.keywords,
-          prompt: form.prompt,
-          subtitle_count: form.subtitle_count,
-          language: form.language
-
+          description: form.description,
+          subheading_count: form.subheading_count,
+          lang: form.lang
         })
       });
       const data = await response.json();
@@ -85,28 +86,29 @@ const WriteArticleContent = () => {
 
             </div>
             <div className="mb-3">
-              <label htmlFor="title" className="form-label fw-semibold">
+              <label htmlFor="subheading_count" className="form-label fw-semibold">
                 <i className="fas fa-list-ul me-2 text-muted"></i>
                 Alt Başlık Sayısı (H2-H6)
               </label>
               <input
                 type="number"
                 className="form-control"
-                id="subtitle_count"
-                name="subtitle_count"
-                value={form.subtitle_count}
+                id="subheading_count"
+                name="subheading_count"
+                value={form.subheading_count}
                 onChange={handleChange}
                 placeholder="Alt başlık sayısı giriniz"
                 disabled={isLoading}
                 required
+                min={1}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="title" className="form-label fw-semibold">
+              <label htmlFor="lang" className="form-label fw-semibold">
                 <i className="fas fa-language me-2 text-muted"></i>
                 Makale Dil
               </label>
-              <select className="form-select" id="language" name="language" value={form.language} onChange={handleChange} disabled={isLoading}>
+              <select className="form-select" id="lang" name="lang" value={form.lang} onChange={handleChange} disabled={isLoading}>
                 <option value="tr">Türkçe</option>
                 <option value="en">İngilizce</option>
               </select>
@@ -129,16 +131,16 @@ const WriteArticleContent = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="prompt" className="form-label fw-semibold">
+              <label htmlFor="description" className="form-label fw-semibold">
                 <i className="fas fa-info-circle me-2 text-muted"></i>
                 Kısa Açıklama / İstek <span className="text-muted">(isteğe bağlı)</span>
               </label>
               <textarea
                 className="form-control"
-                id="prompt"
-                name="prompt"
+                id="description"
+                name="description"
                 rows={3}
-                value={form.prompt}
+                value={form.description}
                 onChange={handleChange}
                 placeholder="Makale ile ilgili özel bir isteğiniz varsa yazın..."
                 disabled={isLoading}

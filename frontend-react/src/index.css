@@ -23,10 +23,6 @@
   overflow-y: auto;
 }
 
-.user-sidebar .nav-link:hover {
-  background-color: #f8f9fa !important;
-  color: #495057 !important;
-}
 
 .user-sidebar .nav-link.active {
   background-color: #0d6efd !important;

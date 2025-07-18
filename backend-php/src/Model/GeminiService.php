@@ -8,7 +8,7 @@ class GeminiService
 
     public function __construct()
     {
-        $this->apiKey = $_ENV['GEMINI_API_KEY'] ?? null;
+        $this->apiKey = getenv('GEMINI_API_KEY');
         if (!$this->apiKey) {
             throw new \Exception('Gemini API anahtarı bulunamadı.');
         }
