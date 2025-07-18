@@ -29,6 +29,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // Use statements
 use App\Controller\AuthController;
+use App\Controller\ArticleController;
 
 try {
     // Load environment variables (if .env file exists)
@@ -72,9 +73,18 @@ try {
         'POST' => [
             '/api/register' => [AuthController::class, 'register'],
             '/api/login' => [AuthController::class, 'login'],
+            // Article endpoints
+            '/api/write_article' => [ArticleController::class, 'writeArticle'],
+            '/api/save_article' => [ArticleController::class, 'saveArticle'],
+            '/api/get_articles' => [ArticleController::class, 'getArticles'],
+            '/api/delete_article' => [ArticleController::class, 'deleteArticleApi'],
             // Alternative routes for subdirectory
             '/Akilli-Makale/backend-php/public/api/register' => [AuthController::class, 'register'],
-            '/Akilli-Makale/backend-php/public/api/login' => [AuthController::class, 'login']
+            '/Akilli-Makale/backend-php/public/api/login' => [AuthController::class, 'login'],
+            '/Akilli-Makale/backend-php/public/api/write_article' => [ArticleController::class, 'writeArticle'],
+            '/Akilli-Makale/backend-php/public/api/save_article' => [ArticleController::class, 'saveArticle'],
+            '/Akilli-Makale/backend-php/public/api/get_articles' => [ArticleController::class, 'getArticles'],
+            '/Akilli-Makale/backend-php/public/api/delete_article' => [ArticleController::class, 'deleteArticleApi']
         ],
         'PUT' => [
             '/api/profile' => [AuthController::class, 'updateProfile'],
