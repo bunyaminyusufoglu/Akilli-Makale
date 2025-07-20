@@ -97,7 +97,7 @@ const WriteArticleContent = () => {
                 name="subheading_count"
                 value={form.subheading_count}
                 onChange={handleChange}
-                placeholder="Alt başlık sayısı giriniz"
+                placeholder="0"
                 disabled={isLoading}
                 required
                 min={1}

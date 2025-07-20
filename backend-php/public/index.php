@@ -1,4 +1,6 @@
 <?php
+
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -33,9 +35,9 @@ use App\Controller\ArticleController;
 
 try {
     // Load environment variables (if .env file exists)
-    if (file_exists(__DIR__ . '/../.env')) {
+    if (file_exists(__DIR__ . '/../../. env')) {
         try {
-            $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+            $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
         } catch (Exception $e) {
             error_log("Dotenv Error: " . $e->getMessage());

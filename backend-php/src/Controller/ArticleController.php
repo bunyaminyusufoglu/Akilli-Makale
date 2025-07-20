@@ -19,7 +19,7 @@ class ArticleController
         $wordCount = str_word_count(strip_tags($content), 0, 'ğüşiöçĞÜŞİÖÇ');
         $creditUsed = (int) ceil($wordCount / 100);
 
-        $db = Database::getInstance();
+        $db = Database::getInstance()->getConnection();
         $articleModel = new Article($db);
         $articleId = $articleModel->addArticle($userId, $title, $content, $wordCount, $creditUsed);
 
@@ -38,7 +38,7 @@ class ArticleController
      */
     public function getUserArticles($userId)
     {
-        $db = Database::getInstance();
+        $db = Database::getInstance()->getConnection();
         $articleModel = new Article($db);
         $articles = $articleModel->getArticlesByUser($userId);
         return [
@@ -55,7 +55,7 @@ class ArticleController
      */
     public function deleteArticle($articleId, $userId)
     {
-        $db = Database::getInstance();
+        $db = Database::getInstance()->getConnection();
         $articleModel = new Article($db);
         $deleted = $articleModel->deleteArticle($articleId, $userId);
         if ($deleted) {
@@ -168,8 +168,20 @@ class ArticleController
             return ['success' => false, 'message' => 'article_id ve user_id zorunludur.'];
         }
         try {
-            $result = $this->deleteArticle($articleId, $userId);
-            return $result;
+            $db = Database::getInstance()->getConnection();
+            $articleModel = new Article($db);
+            $deleted = $articleModel->deleteArticle($articleId, $userId);
+            if ($deleted) {
+                return [
+                    'success' => true,
+                    'message' => 'Makale silindi.'
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Makale silinemedi veya yetkiniz yok.'
+                ];
+            }
         } catch (\Exception $e) {
             http_response_code(500);
             return ['success' => false, 'message' => 'Makale silinemedi: ' . $e->getMessage()];
